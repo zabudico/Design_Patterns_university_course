@@ -1,0 +1,23 @@
+{
+  "name": "design-patterns-pipeline",
+  "version": "1.0.0",
+  "description": "Pipeline pattern implementation for text processing",
+  "main": "main.js",
+  "type": "module",
+  "scripts": {
+    "start": "node main.js",
+    "test": "node test.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "keywords": [
+    "pipeline",
+    "design-patterns",
+    "text-processing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^9.0.0"
+  }
+}
