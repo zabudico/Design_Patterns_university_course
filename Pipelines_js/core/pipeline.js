@@ -127,19 +127,38 @@ export class Pipeline {
   /**
    * Перемещает шаг указанного типа на указанную позицию
    * @param {Function} typeToMove - Конструктор шага для перемещения
-   * @param {number} index - Новая позиция
+   * @param {number} newIndex - Новая позиция (0-based)
    * @returns {boolean} - Успешно ли выполнено перемещение
    */
-  moveTo(typeToMove, index) {
-    const moveIndex = this.steps.findIndex(
+  moveTo(typeToMove, newIndex) {
+    const currentIndex = this.steps.findIndex(
       (step) => step instanceof typeToMove
     );
-    if (moveIndex === -1 || index < 0 || index >= this.steps.length) {
+
+    // Проверка валидности параметров
+    if (currentIndex === -1) {
+      console.log(`Шаг типа ${typeToMove.name} не найден`);
       return false;
     }
 
-    const [step] = this.steps.splice(moveIndex, 1);
-    this.steps.splice(index, 0, step);
+    if (newIndex < 0 || newIndex >= this.steps.length) {
+      console.log(
+        `Некорректный индекс: ${newIndex}. Допустимый диапазон: 0-${
+          this.steps.length - 1
+        }`
+      );
+      return false;
+    }
+
+    // Если шаг уже на нужной позиции, ничего не делаем
+    if (currentIndex === newIndex) {
+      return true;
+    }
+
+    // Перемещаем шаг
+    const [step] = this.steps.splice(currentIndex, 1);
+    this.steps.splice(newIndex, 0, step);
+
     return true;
   }
 }

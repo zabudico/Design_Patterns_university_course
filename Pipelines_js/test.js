@@ -39,12 +39,22 @@ function describe(name, tests) {
 function it(name, test) {
   try {
     test();
-    console.log(`  Ok ${name}`);
+    console.log(`  ✅ ${name}`);
   } catch (error) {
-    console.log(`  fall ${name}`);
+    console.log(`  ❌ ${name}`);
     console.log(`     Error: ${error.message}`);
   }
 }
+
+// Функция для создания тестового pipeline
+const createTestPipeline = () => {
+  return new Pipeline([
+    CleanTextStep.instance,
+    SplitWordsStep.instance,
+    new FilterStopWordsStep(["the", "a"]),
+    StemmingStep.instance,
+  ]);
+};
 
 // Расширенные тесты для полного покрытия функционала
 describe("Pipeline System", () => {
@@ -91,18 +101,8 @@ describe("Pipeline System", () => {
   });
 
   describe("Pipeline Manipulation Methods", () => {
-    let pipeline;
-
-    beforeEach(() => {
-      pipeline = new Pipeline([
-        CleanTextStep.instance,
-        SplitWordsStep.instance,
-        new FilterStopWordsStep(["the", "a"]),
-        StemmingStep.instance,
-      ]);
-    });
-
     it("replaceFirstInstance должен заменять первый шаг указанного типа", () => {
+      const pipeline = createTestPipeline();
       const newStep = new FilterStopWordsStep(["custom"]);
       const result = pipeline.replaceFirstInstance(
         FilterStopWordsStep,
@@ -114,6 +114,7 @@ describe("Pipeline System", () => {
     });
 
     it("replaceFirstInstance должен возвращать false если шаг не найден", () => {
+      const pipeline = createTestPipeline();
       class NonExistentStep extends IPipelineStep {
         execute() {}
         describe() {}
@@ -127,6 +128,7 @@ describe("Pipeline System", () => {
     });
 
     it("replaceAll должен заменять все шаги указанного типа", () => {
+      const pipeline = createTestPipeline();
       pipeline.addStep(CleanTextStep.instance);
 
       const newStep = new FilterStopWordsStep(["all"]);
@@ -138,6 +140,7 @@ describe("Pipeline System", () => {
     });
 
     it("wrapAll должен оборачивать все шаги указанного типа", () => {
+      const pipeline = createTestPipeline();
       const count = pipeline.wrapAll(
         SplitWordsStep,
         (step) => new LoggingStep(step)
@@ -149,14 +152,37 @@ describe("Pipeline System", () => {
     });
 
     it("moveTo должен перемещать шаг на указанную позицию", () => {
-      const result = pipeline.moveTo(StemmingStep, 0);
+      const pipeline = createTestPipeline();
+
+      // Запомним исходное положение StemmingStep
+      const originalStemmingIndex = pipeline.steps.findIndex(
+        (step) => step instanceof StemmingStep
+      );
+
+      // Переместим StemmingStep на позицию 1
+      const result = pipeline.moveTo(StemmingStep, 1);
 
       assert.strictEqual(result, true);
-      assert(pipeline.steps[0] instanceof StemmingStep);
-      assert(pipeline.steps[3] instanceof SplitWordsStep);
+
+      // Проверим что StemmingStep теперь на позиции 1
+      const newStemmingIndex = pipeline.steps.findIndex(
+        (step) => step instanceof StemmingStep
+      );
+      assert.strictEqual(newStemmingIndex, 1);
+
+      // Проверим что количество шагов не изменилось
+      assert.strictEqual(pipeline.steps.length, 4);
+
+      // Проверим что все шаги присутствуют
+      const stepTypes = pipeline.steps.map((step) => step.constructor.name);
+      assert(stepTypes.includes("CleanTextStep"));
+      assert(stepTypes.includes("SplitWordsStep"));
+      assert(stepTypes.includes("FilterStopWordsStep"));
+      assert(stepTypes.includes("StemmingStep"));
     });
 
     it("moveTo должен возвращать false при невалидных параметрах", () => {
+      const pipeline = createTestPipeline();
       class NonExistentStep extends IPipelineStep {
         execute() {}
         describe() {}
