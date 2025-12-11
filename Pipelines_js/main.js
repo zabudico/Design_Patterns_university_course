@@ -14,7 +14,7 @@ import { LoggingStep, ConditionalStep } from "./core/decorators.js";
 import { printPipelineStructure } from "./core/introspection.js";
 
 /**
- * Простой контекст для обработки текста
+ * контекст для обработки текста
  */
 class TextProcessingContext {
   constructor(text) {
@@ -24,7 +24,7 @@ class TextProcessingContext {
 }
 
 /**
- * Расширенный контекст с дополнительными полями
+ * расширенный контекст с дополнительными полями
  */
 class AdvancedTextContext {
   constructor(text) {
@@ -35,7 +35,7 @@ class AdvancedTextContext {
   }
 }
 
-// Создаем pipeline для обработки текста
+// создаем pipeline для обработки текста
 const pipeline = new Pipeline();
 pipeline.addStep(new LoggingStep(CleanTextStep.instance));
 pipeline.addStep(SplitWordsStep.instance);
@@ -47,7 +47,6 @@ pipeline.addStep(
   )
 );
 
-// Демонстрация работы
 console.log("=== Демонстрация Pipeline ===");
 
 const context1 = new TextProcessingContext(
@@ -64,6 +63,13 @@ console.log("\nИсходный текст 2:", context2.text);
 pipeline.execute(context2);
 console.log("Результат 2:", context2.words);
 
-// Интроспекция
 console.log("\n=== Структура Pipeline ===");
 printPipelineStructure(pipeline);
+
+/**
+ * 
+ * 
+const double = (n) => n * 2;
+const addFive = (n) => n + 5;
+pipeline(3, double, addFive); // 3 * 2 = 6 -> 6 + 5 = 11
+ */

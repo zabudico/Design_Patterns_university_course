@@ -4,32 +4,32 @@
  */
 
 /**
- * Базовый интерфейс для всех шагов pipeline
+ * базовый интерфейс для всех шагов pipeline
  * @template T
  * @interface
  */
 export class IPipelineStep {
   /**
-   * Выполняет преобразование контекста
+   * преобразование контекста
    * @param {T} context - Контекст выполнения, передаваемый между шагами
    */
   execute(context) {}
 
   /**
-   * Добавляет описание шага для системы интроспекции
+   * добавляет описание шага для системы интроспекции
    * @param {string[]} builder - Массив строк для построения описания
    */
   describe(builder) {}
 }
 
 /**
- * Pipeline для последовательной обработки данных через цепочку шагов
- * Реализует паттерн "Цепочка ответственности" (Chain of Responsibility)
+ * pipeline для последовательной обработки данных через цепочку шагов
+ * паттерн Цепочка ответственности (Chain of Responsibility)
  * @template T
  */
 export class Pipeline {
   /**
-   * @param {Array<IPipelineStep<T>>} steps - Массив шагов обработки
+   * @param {Array<IPipelineStep<T>>} steps - массив шагов обработки
    */
   constructor(steps = []) {
     /** @type {Array<IPipelineStep<T>>} */
@@ -37,8 +37,8 @@ export class Pipeline {
   }
 
   /**
-   * Выполняет все шаги pipeline над контекстом
-   * Останавливается если контекст помечен как завершенный (isDone = true)
+   * выполняет все шаги pipeline над контекстом
+   * останавливается если контекст помечен как завершенный (isDone = true)
    * @param {T} context - Контекст выполнения
    */
   execute(context) {
@@ -49,17 +49,17 @@ export class Pipeline {
   }
 
   /**
-   * Добавляет шаг в конец pipeline
-   * @param {IPipelineStep<T>} step - Шаг для добавления
+   * добавляет шаг в конец pipeline
+   * @param {IPipelineStep<T>} step - шаг для добавления
    */
   addStep(step) {
     this.steps.push(step);
   }
 
   /**
-   * Генерирует текстовое описание структуры pipeline
-   * Демонстрирует работу системы интроспекции
-   * @returns {string} - Форматированное описание pipeline
+   * генерирует текстовое описание структуры pipeline
+   * каждый шаг возвращает своё описание
+   * @returns {string} - форматированное описание pipeline
    */
   describe() {
     const builder = [];
@@ -72,8 +72,8 @@ export class Pipeline {
   }
 
   /**
-   * Заменяет первый найденный шаг указанного типа
-   * Демонстрирует манипуляции с шагами как с данными (Data-Oriented)
+   * заменяет первый найденный шаг указанного типа
+   * показывает манипуляции с шагами как с данными
    * @param {Function} typeToReplace - Конструктор шага для замены
    * @param {IPipelineStep<T>} newStep - Новый шаг
    * @returns {boolean} - Успешно ли произведена замена
@@ -88,10 +88,10 @@ export class Pipeline {
   }
 
   /**
-   * Заменяет все шаги указанного типа
-   * @param {Function} typeToReplace - Конструктор шага для замены
-   * @param {IPipelineStep<T>} newStep - Новый шаг
-   * @returns {number} - Количество замененных шагов
+   * заменяет все шаги указанного типа
+   * @param {Function} typeToReplace - конструктор шага для замены
+   * @param {IPipelineStep<T>} newStep - новый шаг
+   * @returns {number} - количество замененных шагов
    */
   replaceAll(typeToReplace, newStep) {
     let count = 0;
@@ -106,11 +106,11 @@ export class Pipeline {
   }
 
   /**
-   * Оборачивает все шаги указанного типа в декоратор
-   * Демонстрирует паттерн Декоратор в действии
-   * @param {Function} typeToWrap - Конструктор шага для обертывания
-   * @param {function(IPipelineStep<T>): IPipelineStep<T>} wrapFunc - Функция-обертка
-   * @returns {number} - Количество обернутых шагов
+   * оборачивает все шаги указанного типа в декоратор
+   * паттерн Декоратор
+   * @param {Function} typeToWrap - конструктор шага для обертывания
+   * @param {function(IPipelineStep<T>): IPipelineStep<T>} wrapFunc - функция-обертка
+   * @returns {number} - количество обернутых шагов
    */
   wrapAll(typeToWrap, wrapFunc) {
     let count = 0;
@@ -125,17 +125,17 @@ export class Pipeline {
   }
 
   /**
-   * Перемещает шаг указанного типа на указанную позицию
-   * @param {Function} typeToMove - Конструктор шага для перемещения
-   * @param {number} newIndex - Новая позиция (0-based)
-   * @returns {boolean} - Успешно ли выполнено перемещение
+   * перемещает шаг указанного типа на указанную позицию
+   * @param {Function} typeToMove - конструктор шага для перемещения
+   * @param {number} newIndex - новая позиция (0-based)
+   * @returns {boolean} - успешно ли выполнено перемещение
    */
   moveTo(typeToMove, newIndex) {
     const currentIndex = this.steps.findIndex(
       (step) => step instanceof typeToMove
     );
 
-    // Проверка валидности параметров
+    // проверка параметров
     if (currentIndex === -1) {
       console.log(`Шаг типа ${typeToMove.name} не найден`);
       return false;
@@ -150,12 +150,12 @@ export class Pipeline {
       return false;
     }
 
-    // Если шаг уже на нужной позиции, ничего не делаем
+    // если шаг уже на нужной позиции, ничего не делаем
     if (currentIndex === newIndex) {
       return true;
     }
 
-    // Перемещаем шаг
+    // перемещаем шаг
     const [step] = this.steps.splice(currentIndex, 1);
     this.steps.splice(newIndex, 0, step);
 

@@ -1,0 +1,23 @@
+{
+  "env": {
+    "node": true,
+    "es2020": true
+  },
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "script"
+  },
+  "rules": {
+    "no-undef": "error",
+    "no-unused-vars": "warn",
+    "no-console": "off"
+  },
+  "globals": {
+    "require": "readonly",
+    "module": "readonly",
+    "exports": "readonly",
+    "__dirname": "readonly",
+    "__filename": "readonly"
+  }
+}

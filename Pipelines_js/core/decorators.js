@@ -6,7 +6,7 @@
 import { IPipelineStep } from "./pipeline.js";
 
 /**
- * Декоратор для логирования выполнения шага
+ * логирование выполнения шага
  * @template T
  */
 export class LoggingStep extends IPipelineStep {
@@ -28,7 +28,7 @@ export class LoggingStep extends IPipelineStep {
 }
 
 /**
- * Декоратор для проверки условия выполнения
+ * проверка условия выполнения
  * @template T
  */
 export class ConditionalStep extends IPipelineStep {

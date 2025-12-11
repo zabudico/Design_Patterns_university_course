@@ -15,11 +15,11 @@ import { printPipelineStructure, findStepIndex } from "./core/introspection.js";
 import assert from "assert";
 
 /**
- * Тестовый контекст для проверки pipeline
+ * тестовый контекст для проверки pipeline
  */
 class TestContext {
   /**
-   * @param {string} text - Текст для тестирования
+   * @param {string} text - текст для тестирования
    */
   constructor(text) {
     this.text = text;
@@ -29,7 +29,7 @@ class TestContext {
 }
 
 /**
- * Простой тестовый раннер
+ * простой тестовый раннер
  */
 function describe(name, tests) {
   console.log(`\n${name}`);
@@ -39,14 +39,14 @@ function describe(name, tests) {
 function it(name, test) {
   try {
     test();
-    console.log(`  ✅ ${name}`);
+    console.log(`  + ${name}`);
   } catch (error) {
-    console.log(`  ❌ ${name}`);
+    console.log(`  - ${name}`);
     console.log(`     Error: ${error.message}`);
   }
 }
 
-// Функция для создания тестового pipeline
+// функция для создания тестового pipeline
 const createTestPipeline = () => {
   return new Pipeline([
     CleanTextStep.instance,
@@ -56,7 +56,7 @@ const createTestPipeline = () => {
   ]);
 };
 
-// Расширенные тесты для полного покрытия функционала
+// расширенные тесты для полного покрытия функционала
 describe("Pipeline System", () => {
   describe("Basic Pipeline Execution", () => {
     it("должен корректно выполнять шаги обработки", () => {
@@ -154,26 +154,26 @@ describe("Pipeline System", () => {
     it("moveTo должен перемещать шаг на указанную позицию", () => {
       const pipeline = createTestPipeline();
 
-      // Запомним исходное положение StemmingStep
+      // запомним исходное положение StemmingStep
       const originalStemmingIndex = pipeline.steps.findIndex(
         (step) => step instanceof StemmingStep
       );
 
-      // Переместим StemmingStep на позицию 1
+      // переместим StemmingStep на позицию 1
       const result = pipeline.moveTo(StemmingStep, 1);
 
       assert.strictEqual(result, true);
 
-      // Проверим что StemmingStep теперь на позиции 1
+      // проверим что StemmingStep теперь на позиции 1
       const newStemmingIndex = pipeline.steps.findIndex(
         (step) => step instanceof StemmingStep
       );
       assert.strictEqual(newStemmingIndex, 1);
 
-      // Проверим что количество шагов не изменилось
+      // проверим что количество шагов не изменилось
       assert.strictEqual(pipeline.steps.length, 4);
 
-      // Проверим что все шаги присутствуют
+      // проверим что все шаги присутствуют
       const stepTypes = pipeline.steps.map((step) => step.constructor.name);
       assert(stepTypes.includes("CleanTextStep"));
       assert(stepTypes.includes("SplitWordsStep"));

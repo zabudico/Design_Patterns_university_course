@@ -4,7 +4,7 @@
  */
 
 /**
- * Выводит иерархическое описание pipeline
+ * выводит иерархическое описание pipeline
  * @param {import('./pipeline.js').Pipeline} pipeline
  */
 export function printPipelineStructure(pipeline) {
@@ -12,7 +12,7 @@ export function printPipelineStructure(pipeline) {
 }
 
 /**
- * Находит шаг по типу в pipeline
+ * находит шаг по типу в pipeline
  * @param {import('./pipeline.js').Pipeline} pipeline
  * @param {Function} stepType
  * @returns {number} Индекс шага или -1
